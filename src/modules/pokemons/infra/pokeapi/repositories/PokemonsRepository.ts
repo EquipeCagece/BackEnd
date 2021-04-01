@@ -78,12 +78,9 @@ class PokemonsRepository implements IPokemonsRepository {
       id: pokemon.id,
       name: pokemon.name,
       imageUrl: getPokemonImageById(String(pokemon.id)),
-      types: pokemon.types.map(({ type }) => {
-        return {
-          name: type.name,
-        };
-      }),
     };
+
+    // retornar em ordem as evoluções caso tenha
   }
 }
 
