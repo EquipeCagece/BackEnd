@@ -74,11 +74,12 @@ class PokemonsRepository implements IPokemonsRepository {
       pokemonSpecie.evolutionChain.url,
     );
 
-    const baseForm = {
-      id: pokemon.id,
-      name: pokemon.name,
-      imageUrl: getPokemonImageById(String(pokemon.id)),
-    };
+    // esse baseForm não é a forma base do pokemon
+    // const baseForm = {
+    //   id: pokemon.id,
+    //   name: pokemon.name,
+    //   imageUrl: getPokemonImageById(String(pokemon.id)),
+    // };
 
     // retornar em ordem as evoluções caso tenha
   }
