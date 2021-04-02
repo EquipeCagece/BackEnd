@@ -12,5 +12,6 @@ const pokemonsController = new PokemonsController();
 profileRouter.get('/evolutions', evolutionsController.index);
 profileRouter.get('/stats', pokemonStatsController.show);
 profileRouter.get('/', pokemonsController.index);
+profileRouter.get('/search', pokemonsController.show);
 
 export default profileRouter;
