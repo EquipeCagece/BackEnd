@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 
 import GetEvolutionsService from '@modules/pokemons/services/GetEvolutionsService';
 
-export default class GetEvolutionsControllers {
+export default class EvolutionsController {
   public async index(request: Request, response: Response): Promise<Response> {
     const { id } = request.body;
 
