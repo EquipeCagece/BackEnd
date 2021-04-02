@@ -11,6 +11,7 @@ import {
 import { Exclude, Expose } from 'class-transformer';
 
 import Favorite from './Favorite';
+import Team from '@modules/teams/infra/typeorm/entites/Team';
 
 @Entity('users')
 class User {
@@ -53,6 +54,11 @@ class User {
   @OneToMany(() => Favorite, favorite => favorite.user)
   @JoinColumn({ name: 'favorite_id' })
   favorites: Favorite[];
+
+  @OneToMany(() => Team, team => team.user)
+  @JoinColumn({ name: 'user_id' })
+  teams: Team[];
 }
+
 
 export default User;
