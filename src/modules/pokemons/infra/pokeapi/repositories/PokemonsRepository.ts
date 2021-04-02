@@ -1,11 +1,13 @@
 import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
 
-import PokeApiDTO from '@modules/pokemons/dtos/PokeApiDTO';
+import PokeApiDTO, { Type } from '@modules/pokemons/dtos/PokeApiDTO';
 import PokeApiSpecieDTO from '@modules/pokemons/dtos/PokeApiSpecieDTO';
 import PokeApiEvolutionDTO from '@modules/pokemons/dtos/PokeApiEvolutionDTO';
 import PokeApiResultDTO from '@modules/pokemons/dtos/PokeApiResultDTO';
 
-import PokemonDTO from '@modules/pokemons/dtos/PokemonDTO';
+import PokemonDTO, {
+  TypePokemonFormatted,
+} from '@modules/pokemons/dtos/PokemonDTO';
 import PokemonsDTO from '@modules/pokemons/dtos/PokemonsDTO';
 import EvolutionDTO from '@modules/pokemons/dtos/EvolutionDTO';
 
@@ -13,13 +15,9 @@ import pokeApi from '../utils/pokeApi';
 
 class PokemonsRepository implements IPokemonsRepository {
   async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
-    const { data: pokemon } = await pokeApi.get<PokeApiDTO>(`/pokemon/${name}`);
+    const pokemon = await this.getPokemonData(name);
 
-    const pokemonTypesFormatted = pokemon.types.map(({ type }) => {
-      return {
-        name: type.name,
-      };
-    });
+    const pokemonTypesFormatted = this.getTypesPokemon(pokemon.types);
 
     const pokemonStatsFormatted = pokemon.stats.map(stat => {
       let nameStat = '';
@@ -78,9 +76,7 @@ class PokemonsRepository implements IPokemonsRepository {
     );
 
     if (evolutions.chain.evolves_to.length === 0) {
-      const { data: pokemon } = await pokeApi.get<PokeApiDTO>(
-        `/pokemon/${evolutions.chain.species.name}`,
-      );
+      const pokemon = await this.getPokemonData(evolutions.chain.species.name);
       return {
         pokemonBaseForm: {
           id: pokemon.id,
@@ -182,9 +178,7 @@ class PokemonsRepository implements IPokemonsRepository {
     const pokemons = results.map(async pokemon => {
       const pokemonId = this.getPokemonIdByUrl(pokemon.url);
 
-      const { data: pokemonData } = await pokeApi.get<PokeApiDTO>(
-        `/pokemon/${pokemonId}`,
-      );
+      const pokemonData = await this.getPokemonData(pokemonId);
 
       const types = pokemonData.types.map(({ type }) => {
         return {
@@ -203,11 +197,38 @@ class PokemonsRepository implements IPokemonsRepository {
     return Promise.all(pokemons);
   }
 
+  async searchPokemonByName(name: string): Promise<PokemonsDTO> {
+    const pokemonData = await this.getPokemonData(name);
+
+    return {
+      id: pokemonData.id,
+      name: pokemonData.name,
+      imageUrl: this.getPokemonImage(String(pokemonData.id)),
+      types: this.getTypesPokemon(pokemonData.types),
+    };
+  }
+
   getPokemonImage(id: string): string {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
   }
 
   getPokemonIdByUrl = (url: string): string => url.split('/')[6];
+
+  async getPokemonData(id: string): Promise<PokeApiDTO> {
+    const { data: pokemon } = await pokeApi.get<PokeApiDTO>(`/pokemon/${id}`);
+
+    return pokemon;
+  }
+
+  getTypesPokemon(type: Type[]): TypePokemonFormatted[] {
+    const types = type.map(({ type: typeFormatted }) => {
+      return {
+        name: typeFormatted.name,
+      };
+    });
+
+    return types;
+  }
 }
 
 export default PokemonsRepository;
