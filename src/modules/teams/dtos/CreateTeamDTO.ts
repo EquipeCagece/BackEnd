@@ -2,10 +2,8 @@ import PokemonsDTO from "@modules/pokemons/dtos/PokemonsDTO";
 import User from "@modules/users/infra/typeorm/entities/User";
 
 export default interface CreateTeamDTO {
-    id: number;
+    id: string;
     name: string;
-    listPokemons: Array<{
-        pokemon: PokemonsDTO;
-    }>;
     user: User;
+    image: string;
 }
