@@ -15,3 +15,7 @@ export default interface PokemonDTO {
     name: string;
   }>;
 }
+
+export interface TypePokemonFormatted {
+  name: string;
+}
