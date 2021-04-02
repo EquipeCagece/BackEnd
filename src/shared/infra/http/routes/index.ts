@@ -10,6 +10,6 @@ const routes = Router();
 routes.use('/users', usersRouter);
 routes.use('/sessions', sessionsRouter);
 routes.use('/profile', profileRouter);
-routes.use('/evolutions', evolutionsRouter);
+routes.use('/pokemon', evolutionsRouter);
 
 export default routes;

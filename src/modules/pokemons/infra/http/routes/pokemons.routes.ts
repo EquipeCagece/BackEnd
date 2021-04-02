@@ -1,11 +1,16 @@
 import { Router } from 'express';
 
-// eslint-disable-next-line import/no-unresolved
-import GetEvolutionsControllers from '../controllers/getEvolutionsControllers';
+import EvolutionsController from '../controllers/EvolutionsController';
+import PokemonStatsController from '../controllers/PokemonStatsController';
+import PokemonsController from '../controllers/PokemonsController';
 
 const profileRouter = Router();
-const getEvolutionsControllers = new GetEvolutionsControllers();
+const evolutionsController = new EvolutionsController();
+const pokemonStatsController = new PokemonStatsController();
+const pokemonsController = new PokemonsController();
 
-profileRouter.get('/', getEvolutionsControllers.index);
+profileRouter.get('/evolutions', evolutionsController.index);
+profileRouter.get('/stats', pokemonStatsController.show);
+profileRouter.get('/', pokemonsController.index);
 
 export default profileRouter;
