@@ -3,14 +3,16 @@ import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsReposit
 import PokeApiDTO from '@modules/pokemons/dtos/PokeApiDTO';
 import PokeApiSpecieDTO from '@modules/pokemons/dtos/PokeApiSpecieDTO';
 import PokeApiEvolutionDTO from '@modules/pokemons/dtos/PokeApiEvolutionDTO';
+import PokeApiResultDTO from '@modules/pokemons/dtos/PokeApiResultDTO';
 
 import PokemonDTO from '@modules/pokemons/dtos/PokemonDTO';
+import PokemonsDTO from '@modules/pokemons/dtos/PokemonsDTO';
 import EvolutionDTO from '@modules/pokemons/dtos/EvolutionDTO';
 
 import pokeApi from '../utils/pokeApi';
 
 class PokemonsRepository implements IPokemonsRepository {
-  async getPokemonByName(name: string): Promise<PokemonDTO> {
+  async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
     const { data: pokemon } = await pokeApi.get<PokeApiDTO>(`/pokemon/${name}`);
 
     const pokemonTypesFormatted = pokemon.types.map(({ type }) => {
@@ -37,7 +39,7 @@ class PokemonsRepository implements IPokemonsRepository {
       }
 
       return {
-        baseStatus: stat.baseStat,
+        baseStatus: stat.base_stat,
         name: nameStat,
       };
     });
@@ -68,14 +70,14 @@ class PokemonsRepository implements IPokemonsRepository {
     );
 
     const pokemonIdInEvolutionChain = this.getPokemonIdByUrl(
-      pokemonSpecie.evolutionChain.url.toString(),
+      pokemonSpecie.evolution_chain.url,
     );
 
     const { data: evolutions } = await pokeApi.get<PokeApiEvolutionDTO>(
-      `/evolutin-chain/${pokemonIdInEvolutionChain}`,
+      `/evolution-chain/${pokemonIdInEvolutionChain}`,
     );
 
-    if (evolutions.chain.evolvesTo.length === 0) {
+    if (evolutions.chain.evolves_to.length === 0) {
       const { data: pokemon } = await pokeApi.get<PokeApiDTO>(
         `/pokemon/${evolutions.chain.species.name}`,
       );
@@ -88,7 +90,7 @@ class PokemonsRepository implements IPokemonsRepository {
       };
     }
 
-    const evolutionsFormatted = evolutions.chain.evolvesTo.map(evolves => {
+    const evolutionsFormatted = evolutions.chain.evolves_to.map(evolves => {
       const { name: baseFormName, url: baseFormUrl } = evolutions.chain.species;
 
       const idBaseForm = this.getPokemonIdByUrl(baseFormUrl);
@@ -111,8 +113,8 @@ class PokemonsRepository implements IPokemonsRepository {
 
       let pokemonSecondEvolution;
 
-      if (evolves.evolvesTo.length !== 0) {
-        evolves.evolvesTo.map(secondEvolves => {
+      if (evolves.evolves_to.length !== 0) {
+        evolves.evolves_to.map(secondEvolves => {
           const secondEvolutionPokemonId = this.getPokemonIdByUrl(
             secondEvolves.species.url,
           );
@@ -126,7 +128,11 @@ class PokemonsRepository implements IPokemonsRepository {
           return pokemonSecondEvolution;
         });
       } else {
-        pokemonSecondEvolution = pokemonFirstEvolution;
+        pokemonSecondEvolution = {
+          id: undefined,
+          name: undefined,
+          imageUrl: undefined,
+        };
       }
 
       return {
@@ -161,6 +167,40 @@ class PokemonsRepository implements IPokemonsRepository {
     };
 
     return pokemonsEvolutions;
+  }
+
+  async getPokemons(offset: number, limit: number): Promise<PokemonsDTO[]> {
+    const response = await pokeApi.get<PokeApiResultDTO>('/pokemon', {
+      params: {
+        offset: offset || 0,
+        limit: limit || 10,
+      },
+    });
+
+    const { results } = response.data;
+
+    const pokemons = results.map(async pokemon => {
+      const pokemonId = this.getPokemonIdByUrl(pokemon.url);
+
+      const { data: pokemonData } = await pokeApi.get<PokeApiDTO>(
+        `/pokemon/${pokemonId}`,
+      );
+
+      const types = pokemonData.types.map(({ type }) => {
+        return {
+          name: type.name,
+        };
+      });
+
+      return {
+        id: pokemonData.id,
+        name: pokemonData.name,
+        imageUrl: this.getPokemonImage(pokemonId),
+        types,
+      };
+    });
+
+    return Promise.all(pokemons);
   }
 
   getPokemonImage(id: string): string {

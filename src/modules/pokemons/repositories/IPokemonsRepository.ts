@@ -4,9 +4,9 @@ import EvolutionDTO from '../dtos/EvolutionDTO';
 
 export default interface PokemonsRepository {
   // getPokemonByFilter(type: string): Promise<PokemonDTO[]>;
-  getPokemonByName(name: string): Promise<PokemonDTO>;
+  getPokemonStatsByName(name: string): Promise<PokemonDTO>;
   getEvolutionsPokemon(id: string): Promise<EvolutionDTO>;
-  // getPokemons(): Promise<PokemonsDTO[]>;
+  getPokemons(offset: number, limit: number): Promise<PokemonsDTO[]>;
   getPokemonImage(id: string): string;
   getPokemonIdByUrl(url: string): string;
 }
