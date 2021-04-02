@@ -1,5 +1,17 @@
 export default interface EvolutionDTO {
-  id: number;
-  name: string;
-  imageUrl: string;
+  pokemonBaseForm: {
+    id: number;
+    name: string;
+    imageUrl: string;
+  };
+  pokemonFirstEvolution?: {
+    id: number;
+    name: string;
+    imageUrl: string;
+  };
+  pokemonSecondEvolution?: {
+    id?: number;
+    name?: string;
+    imageUrl?: string;
+  };
 }
