@@ -3,6 +3,7 @@ import { getRepository, Repository } from 'typeorm';
 import IFavoritesRepository from '@modules/users/repositories/IFavoritesRepository';
 import FavoritesPokemonsDTO from '@modules/users/dtos/FavoritesPokemonsDTO';
 
+import AppError from '@shared/errors/AppError';
 import Favorite from '../entities/Favorite';
 
 class FavoritesRepository implements IFavoritesRepository {
@@ -19,14 +20,26 @@ class FavoritesRepository implements IFavoritesRepository {
   }
 
   public async findFavoritesByUserId(favorite_id: string): Promise<Favorite[]> {
-    const pokemon = await this.ormRepository.find({
+    const pokemons = await this.ormRepository.find({
       where: { favorite_id },
     });
 
-    return pokemon;
+    return pokemons;
   }
 
   public async favoritePokemon(data: FavoritesPokemonsDTO): Promise<Favorite> {
+    const pokemon = await this.ormRepository.find({
+      where: { favorite_id: data.user.id },
+    });
+
+    const pokemonAlreadyFavorited = pokemon.filter(
+      favorites => favorites.pokemon_id === data.pokemon_id,
+    );
+
+    if (pokemonAlreadyFavorited.length !== 0) {
+      throw new AppError('Pokemon Already Favorited!');
+    }
+
     const favorite = this.ormRepository.create(data);
 
     await this.ormRepository.save(favorite);

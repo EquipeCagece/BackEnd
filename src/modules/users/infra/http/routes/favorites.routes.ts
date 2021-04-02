@@ -9,6 +9,8 @@ const favoritesController = new FavoritesController();
 
 favoritesRouter.use(ensureAuthenticated);
 
+favoritesRouter.get('/', favoritesController.index);
+
 favoritesRouter.post('/create', favoritesController.create);
 
 favoritesRouter.delete('/delete', favoritesController.delete);

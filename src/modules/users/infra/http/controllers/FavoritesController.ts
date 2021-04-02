@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 
 import FavoritePokemonService from '@modules/users/services/FavoritePokemonService';
 import UnFavoritePokemonService from '@modules/users/services/UnFavoritePokemonService';
+import GetPokemonsFavoritedService from '@modules/users/services/GetPokemonsFavoritedService';
 
 export default class FavoritesController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -28,5 +29,15 @@ export default class FavoritesController {
     unFavoritePokemon.execute(id);
 
     return response.status(201).json();
+  }
+
+  async index(request: Request, response: Response): Promise<Response> {
+    const { id } = request.body;
+
+    const getPokemonsFavorited = container.resolve(GetPokemonsFavoritedService);
+
+    const favorites = await getPokemonsFavorited.execute(id);
+
+    return response.status(201).json(favorites);
   }
 }

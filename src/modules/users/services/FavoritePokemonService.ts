@@ -24,7 +24,7 @@ class FavoritePokemonService {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
-      throw new AppError('Incorrect email/password combination', 401);
+      throw new AppError('User not found!', 401);
     }
 
     const data = {
