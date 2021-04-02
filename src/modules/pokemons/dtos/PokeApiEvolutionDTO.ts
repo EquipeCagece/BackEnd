@@ -1,35 +1,35 @@
 export default interface PokeApiEvolutionDTO {
-  babyTriggerItem: null;
+  baby_trigger_item: null;
   chain: Chain;
   id: number;
 }
 
 export interface Chain {
-  evolutionDetails: EvolutionDetail[];
-  evolvesTo: Chain[];
-  isBaby: boolean;
+  evolution_details: EvolutionDetail[];
+  evolves_to: Chain[];
+  is_baby: boolean;
   species: Species;
 }
 
 export interface EvolutionDetail {
   gender: null;
-  heldItem: null;
-  item: Species | null;
-  knownMove: null;
-  knownMoveType: null;
+  held_item: null;
+  item: null;
+  known_move: null;
+  known_move_type: null;
   location: null;
-  minAffection: null;
-  minBeauty: null;
-  minHappiness: number | null;
-  minLevel: null;
-  needsOverworldRain: boolean;
-  partySpecies: null;
-  partyType: null;
-  relativePhysicalStats: null;
-  timeOfDay: string;
-  tradeSpecies: null;
+  min_affection: null;
+  min_beauty: null;
+  min_happiness: null;
+  min_level: number;
+  needs_overworld_rain: boolean;
+  party_species: null;
+  party_type: null;
+  relative_physical_stats: null;
+  time_of_day: string;
+  trade_species: null;
   trigger: Species;
-  turnUpsideDown: boolean;
+  turn_upside_down: boolean;
 }
 
 export interface Species {
