@@ -4,9 +4,13 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
 
 import { Exclude, Expose } from 'class-transformer';
+
+import Favorite from './Favorite';
 
 @Entity('users')
 class User {
@@ -45,6 +49,10 @@ class User {
     }
     return `${process.env.APP_API_URL}/files/${this.avatar}`;
   }
+
+  @OneToMany(() => Favorite, favorite => favorite.user)
+  @JoinColumn({ name: 'favorite_id' })
+  favorites: Favorite[];
 }
 
 export default User;
