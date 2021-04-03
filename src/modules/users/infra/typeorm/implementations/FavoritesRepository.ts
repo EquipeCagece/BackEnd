@@ -29,7 +29,7 @@ class FavoritesRepository implements IFavoritesRepository {
 
   public async favoritePokemon(data: FavoritesPokemonsDTO): Promise<Favorite> {
     const pokemon = await this.ormRepository.find({
-      where: { favorite_id: data.user.id },
+      where: { favorite_id: data.favorite_id },
     });
 
     const pokemonAlreadyFavorited = pokemon.filter(

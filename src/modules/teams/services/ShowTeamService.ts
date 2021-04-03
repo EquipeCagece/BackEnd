@@ -1,13 +1,13 @@
 import { injectable, inject } from 'tsyringe';
 
 import TeamProfileDTO from '../dtos/TeamProfileDTO';
-import ITeamRepository from '../repositories/ITeamRepository'
+import ITeamsRepository from '../repositories/ITeamsRepository';
 
 @injectable()
-class CreateTeamService {
+class ShowTeamService {
   constructor(
-    @inject('TeamRepository')
-    private teamRepository: ITeamRepository
+    @inject('TeamsRepository')
+    private teamRepository: ITeamsRepository,
   ) {}
 
   public async execute(id: string): Promise<TeamProfileDTO> {
@@ -17,4 +17,4 @@ class CreateTeamService {
   }
 }
 
-export default CreateTeamService;
+export default ShowTeamService;

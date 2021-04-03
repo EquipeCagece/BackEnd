@@ -1,12 +1,9 @@
 import { injectable, inject } from 'tsyringe';
-
-import AppError from '@shared/errors/AppError';
-import IUsersRepository from '../repositories/IUsersRepository';
 import IFavoritesRepository from '../repositories/IFavoritesRepository';
 import Favorite from '../infra/typeorm/entities/Favorite';
 
 interface Request {
-  id: string;
+  favorite_id: string;
   pokemon_id: number;
 }
 
@@ -15,21 +12,15 @@ class FavoritePokemonService {
   constructor(
     @inject('FavoritesRepository')
     private favoritesRepository: IFavoritesRepository,
-
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({ id, pokemon_id }: Request): Promise<Favorite> {
-    const user = await this.usersRepository.findById(id);
-
-    if (!user) {
-      throw new AppError('User not found!', 401);
-    }
-
+  public async execute({
+    favorite_id,
+    pokemon_id,
+  }: Request): Promise<Favorite> {
     const data = {
       pokemon_id,
-      user,
+      favorite_id,
     };
 
     const favorite = await this.favoritesRepository.favoritePokemon(data);

@@ -1,39 +1,44 @@
-import { inject } from 'tsyringe';
 import { getRepository, Repository } from 'typeorm';
 
-import ITeamRepository from '@modules/teams/repositories/ITeamRepository';
+import ITeamsRepository from '@modules/teams/repositories/ITeamsRepository';
 
-import PokemonsDTO from '@modules/pokemons/dtos/PokemonsDTO';
 import CreateTeamDTO from '@modules/teams/dtos/CreateTeamDTO';
-import TeamPokemonsDTO from '@modules/teams/dtos/TeamPokemonsDTO';
 import CalculateTypesDTO from '@modules/teams/dtos/CalculateTypesDTO';
 import TeamProfileDTO from '@modules/teams/dtos/TeamProfileDTO';
 
 import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
+import PokemonsRepository from '@modules/pokemons/infra/pokemon/implementations/PokemonsRepository';
 
 import { typeNames } from '@modules/pokemons/infra/pokemon/utils/boardTypes';
 
 import Team from '../entities/Team';
-import PokeTeam from '../entities/Team'
 import PokemonTeam from '../entities/PokemonTeam';
 
-class TeamRepository implements ITeamRepository {
+class TeamsRepository implements ITeamsRepository {
   private ormRepository: Repository<Team>;
 
-  constructor(
-    @inject('PokemonsRepository')
-    private pokemonsRepository: IPokemonsRepository,
-  ) {
+  private pokemonsRepository: IPokemonsRepository;
+
+  constructor() {
     this.ormRepository = getRepository(Team);
+    this.pokemonsRepository = new PokemonsRepository();
+  }
+
+  public async getTeams(user_id: string): Promise<Team[]> {
+    const teams = await this.ormRepository.find({
+      where: { user_id },
+    });
+
+    return teams;
   }
 
   public async getTeamProfile(id: string): Promise<TeamProfileDTO> {
     const team = await this.ormRepository.findOneOrFail(id);
-    
+
     const types = this.calculeTypes(team);
     return {
       team,
-      typeWeakResist: types
+      typeWeakResist: types,
     };
   }
 
@@ -88,11 +93,11 @@ class TeamRepository implements ITeamRepository {
 
     // Para cada pokemon, será calculado sua fraqueza
     pokemons.forEach(pokemon => {
-      const type1 = pokemon.type1;
+      const { type1 } = pokemon;
 
       let type2 = 'none';
       // Se o pokemon possuir um segundo tipo, salva
-      if (pokemon.type2 !== undefined && pokemon.type2.length !== 0) 
+      if (pokemon.type2 !== undefined && pokemon.type2.length !== 0)
         type2 = pokemon.type2;
 
       const vectorAux = this.pokemonsRepository.calcWeakness(type1, type2);
@@ -107,11 +112,11 @@ class TeamRepository implements ITeamRepository {
 
     // Para cada pokemon, será calculado sua fraqueza
     pokemons.forEach(pokemon => {
-      const type1 = pokemon.type1;
+      const { type1 } = pokemon;
 
       let type2 = 'none';
       // Se o pokemon possuir um segundo tipo, salva
-      if (pokemon.type2 !== undefined && pokemon.type2.length !== 0) 
+      if (pokemon.type2 !== undefined && pokemon.type2.length !== 0)
         type2 = pokemon.type2;
 
       const vectorAux = this.pokemonsRepository.calcResistence(type1, type2);
@@ -122,4 +127,4 @@ class TeamRepository implements ITeamRepository {
   }
 }
 
-export default TeamRepository;
+export default TeamsRepository;
