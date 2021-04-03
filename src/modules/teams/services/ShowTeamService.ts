@@ -1,24 +1,20 @@
 import { injectable, inject } from 'tsyringe';
 
-import AppError from '@shared/errors/AppError';
-
-import CalculateTypesDTO from '../dtos/CalculateTypesDTO';
-
-interface Request {
-  user_id: string;
-  name: string;
-  image: string;
-}
+import TeamProfileDTO from '../dtos/TeamProfileDTO';
+import ITeamRepository from '../repositories/ITeamRepository'
 
 @injectable()
 class CreateTeamService {
-  constructor() {}
+  constructor(
+    @inject('TeamRepository')
+    private teamRepository: ITeamRepository
+  ) {}
 
-  public async execute({
-    user_id,
-    name,
-    image,
-  }: Request): Promise<CalculateTypesDTO> {}
+  public async execute(id: string): Promise<TeamProfileDTO> {
+    const profile = await this.teamRepository.getTeamProfile(id);
+
+    return profile;
+  }
 }
 
 export default CreateTeamService;
