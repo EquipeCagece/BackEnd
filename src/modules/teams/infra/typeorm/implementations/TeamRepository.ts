@@ -27,7 +27,7 @@ class TeamRepository implements ITeamRepository {
     this.ormRepository = getRepository(Team);
   }
 
-  public async getTeam(id: string): Promise<TeamProfileDTO> {
+  public async getTeamProfile(id: string): Promise<TeamProfileDTO> {
     const team = await this.ormRepository.findOneOrFail(id);
     
     const types = this.calculeTypes(team);
