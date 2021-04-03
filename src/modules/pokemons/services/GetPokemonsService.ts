@@ -2,17 +2,17 @@ import { injectable, inject } from 'tsyringe';
 
 import PokemonsDTO from '../dtos/PokemonsDTO';
 
-import IPokemonsRepository from '../repositories/IPokemonsRepository';
+import IPokeApiRepository from '../repositories/IPokeApiRepository';
 
 @injectable()
 class GetPokemonsService {
   constructor(
-    @inject('PokemonsRepository')
-    private pokemonsRepository: IPokemonsRepository,
+    @inject('PokeApiRepository')
+    private pokeApiRepository: IPokeApiRepository,
   ) {}
 
   public async execute(offset: number, limit: number): Promise<PokemonsDTO[]> {
-    const pokemons = this.pokemonsRepository.getPokemons(offset, limit);
+    const pokemons = this.pokeApiRepository.getPokemons(offset, limit);
 
     return pokemons;
   }

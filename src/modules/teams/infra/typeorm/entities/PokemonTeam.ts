@@ -2,15 +2,13 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 
-import Team from './Team'
+import Team from './Team';
 
-@Entity('teams')
+@Entity('pokemonTeam')
 class PokemonTeam {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -28,9 +26,8 @@ class PokemonTeam {
   team_id: string;
 
   @ManyToOne(() => Team, team => team.pokemons)
-  @JoinColumn({name: 'team_id'})
+  @JoinColumn({ name: 'team_id' })
   team: Team;
 }
-
 
 export default PokemonTeam;

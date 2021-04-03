@@ -10,8 +10,8 @@ import {
 
 import { Exclude, Expose } from 'class-transformer';
 
+import Team from '../../../../teams/infra/typeorm/entities/Team';
 import Favorite from './Favorite';
-import Team from '@modules/teams/infra/typeorm/entites/Team';
 
 @Entity('users')
 class User {
@@ -59,6 +59,5 @@ class User {
   @JoinColumn({ name: 'user_id' })
   teams: Team[];
 }
-
 
 export default User;

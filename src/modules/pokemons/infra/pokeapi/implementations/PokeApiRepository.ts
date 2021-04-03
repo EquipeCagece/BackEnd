@@ -1,4 +1,4 @@
-import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
+import IPokeApiRepository from '@modules/pokemons/repositories/IPokeApiRepository';
 
 import PokeApiDTO, { Type } from '@modules/pokemons/dtos/PokeApiDTO';
 import PokeApiSpecieDTO from '@modules/pokemons/dtos/PokeApiSpecieDTO';
@@ -13,10 +13,8 @@ import EvolutionDTO from '@modules/pokemons/dtos/EvolutionDTO';
 
 import pokeApi from '../utils/pokeApi';
 
-import { BOARD, typesToInt } from '../utils/boardTypes';
-
-class PokemonsRepository implements IPokemonsRepository {
-    async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
+class PokeApiRepository implements IPokeApiRepository {
+  public async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
     const pokemon = await this.getPokemonData(name);
 
     const pokemonTypesFormatted = this.getTypesPokemon(pokemon.types);
@@ -64,7 +62,7 @@ class PokemonsRepository implements IPokemonsRepository {
     return data;
   }
 
-  async getEvolutionsPokemon(id: string): Promise<EvolutionDTO> {
+  public async getEvolutionsPokemon(id: string): Promise<EvolutionDTO> {
     const { data: pokemonSpecie } = await pokeApi.get<PokeApiSpecieDTO>(
       `pokemon-species/${id}`,
     );
@@ -167,7 +165,10 @@ class PokemonsRepository implements IPokemonsRepository {
     return pokemonsEvolutions;
   }
 
-  async getPokemons(offset: number, limit: number): Promise<PokemonsDTO[]> {
+  public async getPokemons(
+    offset: number,
+    limit: number,
+  ): Promise<PokemonsDTO[]> {
     const response = await pokeApi.get<PokeApiResultDTO>('/pokemon', {
       params: {
         offset: offset || 0,
@@ -199,7 +200,7 @@ class PokemonsRepository implements IPokemonsRepository {
     return Promise.all(pokemons);
   }
 
-  async searchPokemonByName(name: string): Promise<PokemonsDTO> {
+  public async searchPokemonByName(name: string): Promise<PokemonsDTO> {
     const pokemonData = await this.getPokemonData(name);
 
     return {
@@ -210,19 +211,19 @@ class PokemonsRepository implements IPokemonsRepository {
     };
   }
 
-  getPokemonImage(id: string): string {
+  public getPokemonImage(id: string): string {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
   }
 
-  getPokemonIdByUrl = (url: string): string => url.split('/')[6];
+  public getPokemonIdByUrl = (url: string): string => url.split('/')[6];
 
-  async getPokemonData(id: string): Promise<PokeApiDTO> {
+  public async getPokemonData(id: string): Promise<PokeApiDTO> {
     const { data: pokemon } = await pokeApi.get<PokeApiDTO>(`/pokemon/${id}`);
 
     return pokemon;
   }
 
-  getTypesPokemon(type: Type[]): TypePokemonFormatted[] {
+  public getTypesPokemon(type: Type[]): TypePokemonFormatted[] {
     const types = type.map(({ type: typeFormatted }) => {
       return {
         name: typeFormatted.name,
@@ -231,49 +232,6 @@ class PokemonsRepository implements IPokemonsRepository {
 
     return types;
   }
-
-  public calcWeakness (strType1: String, strType2: String) {
-		let result: number[] = [];
-
-        let type1 = typesToInt.get(strType1);
-        let type2 = typesToInt.get(strType2);
-		
-        if (type1 === undefined) {
-            type1 = 0;
-        }
-        if (type2 === undefined) {
-            type2 = 0;
-        }
-
-		for(let i = 0; i < 18; ++i){
-            if(BOARD[type1][i] * BOARD[type2][i] >= 2.0){
-                result.push(i);
-            }
-        }
-		return result;
-	}
-
-  public calcResistence (strType1: String, strType2: String) {
-		let result: number[] = [];
-
-        let type1 = (typesToInt.get(strType1) === undefined) ? 0 : typesToInt.get(strType1);
-        let type2 = typesToInt.get(strType2);
-		
-        if (type1 === undefined) {
-            type1 = 0;
-        }
-        if (type2 === undefined) {
-            type2 = 0;
-        }
-
-		for(let i = 0; i < 18; ++i){
-            if(BOARD[type1][i] * BOARD[type2][i] <= 0.5){
-                result.push(i);
-            }
-        }
-		return result;
-	}
-
 }
 
-export default PokemonsRepository;
+export default PokeApiRepository;
