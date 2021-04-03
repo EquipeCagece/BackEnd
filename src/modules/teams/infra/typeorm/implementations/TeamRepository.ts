@@ -7,6 +7,7 @@ import PokemonsDTO from '@modules/pokemons/dtos/PokemonsDTO';
 import CreateTeamDTO from '@modules/teams/dtos/CreateTeamDTO';
 import TeamPokemonsDTO from '@modules/teams/dtos/TeamPokemonsDTO';
 import CalculateTypesDTO from '@modules/teams/dtos/CalculateTypesDTO';
+import TeamProfileDTO from '@modules/teams/dtos/TeamProfileDTO';
 
 import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
 
@@ -22,6 +23,10 @@ class TeamRepository implements ITeamRepository {
     private pokemonsRepository: IPokemonsRepository,
   ) {
     this.ormRepository = getRepository(Team);
+  }
+
+  public async getTeam(id: string): Promise<TeamProfileDTO> {
+    const team = this.ormRepository.findOneOrFail();
   }
 
   public async createTeam(data: CreateTeamDTO): Promise<Team> {
