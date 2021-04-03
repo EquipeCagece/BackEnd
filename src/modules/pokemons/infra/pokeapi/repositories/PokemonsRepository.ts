@@ -13,8 +13,10 @@ import EvolutionDTO from '@modules/pokemons/dtos/EvolutionDTO';
 
 import pokeApi from '../utils/pokeApi';
 
+import { BOARD, typesToInt } from '../utils/boardTypes';
+
 class PokemonsRepository implements IPokemonsRepository {
-  async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
+    async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
     const pokemon = await this.getPokemonData(name);
 
     const pokemonTypesFormatted = this.getTypesPokemon(pokemon.types);
@@ -229,6 +231,49 @@ class PokemonsRepository implements IPokemonsRepository {
 
     return types;
   }
+
+  public calcWeakness (strType1: String, strType2: String) {
+		let result: number[] = [];
+
+        let type1 = typesToInt.get(strType1);
+        let type2 = typesToInt.get(strType2);
+		
+        if (type1 === undefined) {
+            type1 = 0;
+        }
+        if (type2 === undefined) {
+            type2 = 0;
+        }
+
+		for(let i = 0; i < 18; ++i){
+            if(BOARD[type1][i] * BOARD[type2][i] >= 2.0){
+                result.push(i);
+            }
+        }
+		return result;
+	}
+
+  public calcResistence (strType1: String, strType2: String) {
+		let result: number[] = [];
+
+        let type1 = (typesToInt.get(strType1) === undefined) ? 0 : typesToInt.get(strType1);
+        let type2 = typesToInt.get(strType2);
+		
+        if (type1 === undefined) {
+            type1 = 0;
+        }
+        if (type2 === undefined) {
+            type2 = 0;
+        }
+
+		for(let i = 0; i < 18; ++i){
+            if(BOARD[type1][i] * BOARD[type2][i] <= 0.5){
+                result.push(i);
+            }
+        }
+		return result;
+	}
+
 }
 
 export default PokemonsRepository;

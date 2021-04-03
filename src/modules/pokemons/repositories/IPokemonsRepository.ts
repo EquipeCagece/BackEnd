@@ -13,4 +13,6 @@ export default interface PokemonsRepository {
   getPokemonIdByUrl(url: string): string;
   getPokemonData(id: string): Promise<PokeApiDTO>;
   getTypesPokemon(type: Type[]): TypePokemonFormatted[];
+  calcWeakness (strType1: String, strType2: String): number[];
+  calcResistence (strType1: String, strType2: String): number[];
 }

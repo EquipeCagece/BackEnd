@@ -1,16 +1,22 @@
 import PokemonsDTO from "@modules/pokemons/dtos/PokemonsDTO";
 import CreateTeamDTO from "@modules/teams/dtos/CreateTeamDTO";
 import ITeamRepository from "@modules/teams/repositories/ITeamRepository";
-import User from "@modules/users/infra/typeorm/entities/User";
-import AppError from "@shared/errors/AppError";
 import { getRepository, Repository } from "typeorm";
 import Team from "../entites/Team";
 
+import PokemonsRepository from '@modules/pokemons/infra/pokeapi/repositories/PokemonsRepository'
+import IPokemonsRepository from "@modules/pokemons/repositories/IPokemonsRepository";
+
+import { typeNames } from '@modules/pokemons/infra/pokeapi/utils/boardTypes';
+import TeamPokemonsDTO from "@modules/teams/dtos/TeamPokemonsDTO";
+
 class TeamRepository implements ITeamRepository {
     private ormRepository: Repository<Team>;
+	private pokemonsRepository: IPokemonsRepository;
 
     constructor() {
       this.ormRepository = getRepository(Team);
+	  this.pokemonsRepository = new PokemonsRepository();
     }
 
     public async createTeam(data: CreateTeamDTO): Promise<Team> {
@@ -25,69 +31,72 @@ class TeamRepository implements ITeamRepository {
       await this.ormRepository.remove(data);
     }
 
-    public calculeTypes(team: Team): void {
-        //let allWeaknesses = calcWeakness;
-        /*List<Integer> allWeaknesses = new ArrayList<Integer>();
-		List<Integer> allResistances = new ArrayList<Integer>();
-
-		allWeaknesses = calcWeakness(team.getPokemon());
-		allResistances = calcResistence(team.getPokemon());
-		allWeaknesses.sort(null);
-		allResistances.sort(null);
-
-		for (int i = 0; i < allWeaknesses.size(); ++i) {
-			if (allResistances.contains(allWeaknesses.get(i))) {
+    public calculeTypes(team: TeamPokemonsDTO): void {
+        let allWeaknesses = this.calcWeakness(team.pokemons);
+		let allResistances = this.calcWeakness(team.pokemons);
+						
+		for (let i = 0; i < allWeaknesses.length; ++i) {
+			if (allResistances.includes(allWeaknesses[i])) {
 				// Se encontrou a fraqueza na lista de resistências, então remove das duas listas (a lista terá um tamanho
 				// menor, logo diminui o i)
-				allResistances.remove(allWeaknesses.get(i));
-				allWeaknesses.remove(allWeaknesses.get(i));
+				const index = allResistances.findIndex(callback => callback == allWeaknesses[i])
+				allResistances.splice(index, 1);
+				allWeaknesses.splice(i, 1);
 				--i;
 			}
-		}*/
-    }
+		}
+		allWeaknesses.sort;
+		allResistances.sort;
 
-    public calcWeakness(pokemons: PokemonsDTO[]): number[]{
-        let allWeaknesses;
-        /*List<Integer> allWeaknesses = new ArrayList<Integer>();
+		let allWeaknessesStr, allResistenceStr; 
+
+		// Passa os tipos guardados em inteiros para strings
+		allWeaknesses.forEach (index => {
+			allWeaknessesStr.push(typeNames[index]);
+		});
+
+		allResistances.forEach (index => {
+			allResistenceStr.push(typeNames[index]);
+		});
+
+		//retorno = allWeaknessesStr e allResistenceStr
+    }
+	
+	public calcWeakness(pokemons: PokemonsDTO[]): number[]{
+        let allWeaknesses: number[] = [];
 
 		// Para cada pokemon, será calculado sua fraqueza
-		for (Pokemon pokemon : pokemons) {
-			String type1 = pokemon.getType().get(0);
-
-			String type2 = "none";
+		pokemons.forEach (pokemon => {
+			let type1 = pokemon.types[0].name;
+			
+			let type2 = "none";
 			// Se o pokemon possuir um segundo tipo, salva
-			if (pokemon.getType().size() == 2)
-				type2 = pokemon.getType().get(1);
-
-			allWeaknesses.addAll(PokemonDAO.calcWeakness(type1, type2));
-		}
-		return allWeaknesses;*/
+			if (pokemon.types.length === 2)
+				type2 = pokemon.types[1].name;
+			
+			const vectorAux = this.pokemonsRepository.calcWeakness(type1, type2);
+			allWeaknesses = [...vectorAux];
+		})
+			
         return allWeaknesses;
     }
-
+    
     public calcResistence(pokemons: PokemonsDTO[]): number[]{
-        let allWeaknesses;
+        let allResistances: number[] = [];
 
-        return allWeaknesses;
-    }
-
-    public calcWeaknessPoke(type1: string, type2: string): number[] {
-        /**List<Integer> result = new ArrayList<Integer>();
-		Map<String, Integer> typesToInt = new HashMap<>();
-		typesToInt = typesToInt();
-		int type1 = 0, type2 = 0;
-
-		type1 = typesToInt.get(strType1);
-		type2 = typesToInt.get(strType2);
-
-		for(int i = 0; i < 18; ++i){
-            if(BOARD[type1][i] * BOARD[type2][i] >= 2.0){
-                result.add(new Integer(i));
-            }
-        }
-		return result; */
-    }
-    public calcResistencePoke(type1: string, type2: string): number[] {
-
+		// Para cada pokemon, será calculado sua fraqueza
+		pokemons.forEach (pokemon => {
+			let type1 = pokemon.types[0].name;
+			
+			let type2 = "none";
+			// Se o pokemon possuir um segundo tipo, salva
+			if (pokemon.types.length === 2)
+				type2 = pokemon.types[1].name;
+			
+			const vectorAux = this.pokemonsRepository.calcResistence(type1, type2);
+			allResistances = [...vectorAux];
+		})
+			
+        return allResistances;
     }
 }
