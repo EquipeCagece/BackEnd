@@ -11,8 +11,6 @@ import IHashProvider from '../providers/HashProvider/models/HashProvider';
 interface Request {
   name: string;
   email: string;
-  userName: string;
-  lastName: string;
   password: string;
 }
 
@@ -26,13 +24,7 @@ class CreateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({
-    name,
-    email,
-    userName,
-    lastName,
-    password,
-  }: Request): Promise<User> {
+  public async execute({ name, email, password }: Request): Promise<User> {
     function validateEmail(): boolean {
       const re = new RegExp(
         // eslint-disable-next-line no-useless-escape
@@ -57,8 +49,6 @@ class CreateUserService {
     const data = {
       name,
       email,
-      userName,
-      lastName,
       password: hashedPassword,
     };
 

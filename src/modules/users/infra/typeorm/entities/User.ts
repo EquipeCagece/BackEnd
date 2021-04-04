@@ -25,12 +25,6 @@ class User {
   email: string;
 
   @Column()
-  userName: string;
-
-  @Column()
-  lastName: string;
-
-  @Column()
   @Exclude()
   password: string;
 
