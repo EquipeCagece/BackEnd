@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import { classToClass } from 'class-transformer';
 
 import UpdateTeamService from '@modules/teams/services/UpdateTeamService';
 
