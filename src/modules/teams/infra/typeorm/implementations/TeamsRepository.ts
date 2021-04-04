@@ -128,6 +128,16 @@ class TeamsRepository implements ITeamsRepository {
 
     return allResistances;
   }
+
+  public async getTeamById(id : string): Promise<Team> {
+    const team = await this.ormRepository.findOneOrFail(id);
+
+    return team;
+  }
+
+  public async save(team: Team): Promise<Team> {
+    return this.ormRepository.save(team);
+  }
 }
 
 export default TeamsRepository;
