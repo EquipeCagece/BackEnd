@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import UpdateTeamService from '@modules/teams/services/UpdateTeamService';
+import { classToClass } from 'class-transformer';
 
+import UpdateTeamService from '@modules/teams/services/UpdateTeamService';
 
 export default class TeamUpdateController {
   async update(request: Request, response: Response): Promise<Response> {
@@ -15,6 +16,6 @@ export default class TeamUpdateController {
       name,
     });
 
-    return response.json(team);
+    return response.json(classToClass(team));
   }
 }

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
+import { classToClass } from 'class-transformer';
+
 import ShowTeamService from '@modules/teams/services/ShowTeamService';
 import CreateTeamService from '@modules/teams/services/CreateTeamService';
 import GetTeamsService from '@modules/teams/services/GetTeamsService';
@@ -21,7 +23,7 @@ export default class TeamsController {
 
     const team = await createTeamService.execute(data);
 
-    return response.json(team);
+    return response.json(classToClass(team));
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
@@ -31,7 +33,7 @@ export default class TeamsController {
 
     const teams = await getTeamsService.execute(user_id);
 
-    return response.json(teams);
+    return response.json(classToClass(teams));
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
@@ -41,7 +43,7 @@ export default class TeamsController {
 
     const team = await showTeamService.execute(id);
 
-    return response.json(team);
+    return response.json(classToClass(team));
   }
 
   public async delete(request: Request, response: Response): Promise<Response> {

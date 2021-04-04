@@ -129,7 +129,7 @@ class TeamsRepository implements ITeamsRepository {
     return allResistances;
   }
 
-  public async getTeamById(id : string): Promise<Team> {
+  public async getTeamById(id: string): Promise<Team> {
     const team = await this.ormRepository.findOneOrFail(id);
 
     return team;

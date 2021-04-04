@@ -34,7 +34,7 @@ class Team {
   updated_at: Date;
 
   @Expose({ name: 'team_url' })
-  getAvatarUrl(): string | null {
+  getTeamUrl(): string | null {
     if (!this.image) {
       return null;
     }
