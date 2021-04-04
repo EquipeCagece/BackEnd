@@ -29,13 +29,17 @@ class AddPokemonToTeamService {
     const pokemonsInTeam = await this.pokemonsTeamsRepository.getPokemonsByTeamId(
       team_id,
     );
-
+    console.log(pokemonsInTeam);
     const pokemonAlreadyInTeam = pokemonsInTeam.filter(
       poke => poke.name === pokemon.name,
     );
 
     if (pokemonAlreadyInTeam.length !== 0) {
       throw new AppError('Pokemon Already in team!');
+    }
+
+    if (pokemonsInTeam.length > 5) {
+      throw new AppError('Team already full!');
     }
 
     const pokemonFormatted = {
