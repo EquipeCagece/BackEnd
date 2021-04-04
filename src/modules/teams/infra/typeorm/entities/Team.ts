@@ -36,7 +36,9 @@ class Team {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => PokemonTeam, pokemonTeam => pokemonTeam.team)
+  @OneToMany(() => PokemonTeam, pokemonTeam => pokemonTeam.team, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'team_id' })
   pokemons: PokemonTeam[];
 }

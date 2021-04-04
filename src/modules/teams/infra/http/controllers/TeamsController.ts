@@ -4,6 +4,7 @@ import { container } from 'tsyringe';
 import ShowTeamService from '@modules/teams/services/ShowTeamService';
 import CreateTeamService from '@modules/teams/services/CreateTeamService';
 import GetTeamsService from '@modules/teams/services/GetTeamsService';
+import RemoveTeamService from '@modules/teams/services/RemoveTeamService';
 
 export default class TeamsController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -41,5 +42,15 @@ export default class TeamsController {
     const team = await showTeamService.execute(id);
 
     return response.json(team);
+  }
+
+  public async delete(request: Request, response: Response): Promise<Response> {
+    const { id } = request.body;
+
+    const removeTeamService = container.resolve(RemoveTeamService);
+
+    await removeTeamService.execute(id);
+
+    return response.status(201).json();
   }
 }

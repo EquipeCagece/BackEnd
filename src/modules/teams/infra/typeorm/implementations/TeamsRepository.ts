@@ -24,16 +24,19 @@ class TeamsRepository implements ITeamsRepository {
     this.pokemonsRepository = new PokemonsRepository();
   }
 
-  public async getTeams(user_id: string): Promise<Team[]> {
+  public async getTeamsByUserId(user_id: string): Promise<Team[]> {
     const teams = await this.ormRepository.find({
       where: { user_id },
+      relations: ['pokemons'],
     });
 
     return teams;
   }
 
   public async getTeamProfile(id: string): Promise<TeamProfileDTO> {
-    const team = await this.ormRepository.findOneOrFail(id);
+    const team = await this.ormRepository.findOneOrFail(id, {
+      relations: ['pokemons'],
+    });
 
     const types = this.calculeTypes(team);
     return {
@@ -50,13 +53,15 @@ class TeamsRepository implements ITeamsRepository {
     return teamCreated;
   }
 
-  public async deleteTeam(data: Team): Promise<void> {
-    await this.ormRepository.remove(data);
+  public async deleteTeam(id: string): Promise<void> {
+    const team = await this.ormRepository.findOneOrFail(id);
+
+    await this.ormRepository.remove(team);
   }
 
   public calculeTypes(team: Team): CalculateTypesDTO {
     const allWeaknesses = this.calcWeakness(team.pokemons);
-    const allResistances = this.calcWeakness(team.pokemons);
+    const allResistances = this.calcResistence(team.pokemons);
 
     for (let i = 0; i < allWeaknesses.length; i += 1) {
       if (allResistances.includes(allWeaknesses[i])) {
@@ -74,12 +79,12 @@ class TeamsRepository implements ITeamsRepository {
     allResistances.sort();
 
     // Passa os tipos guardados em inteiros para strings
-    const allWeaknessesStr = allWeaknesses.map((_, index) => {
-      return typeNames[index];
+    const allWeaknessesStr = allWeaknesses.map(value => {
+      return typeNames[value];
     });
 
-    const allResistenceStr = allResistances.map((_, index) => {
-      return typeNames[index];
+    const allResistenceStr = allResistances.map(value => {
+      return typeNames[value];
     });
 
     return {
@@ -89,7 +94,7 @@ class TeamsRepository implements ITeamsRepository {
   }
 
   public calcWeakness(pokemons: PokemonTeam[]): number[] {
-    let allWeaknesses: number[] = [];
+    const allWeaknesses: number[] = [];
 
     // Para cada pokemon, será calculado sua fraqueza
     pokemons.forEach(pokemon => {
@@ -97,18 +102,17 @@ class TeamsRepository implements ITeamsRepository {
 
       let type2 = 'none';
       // Se o pokemon possuir um segundo tipo, salva
-      if (pokemon.type2 !== undefined && pokemon.type2.length !== 0)
-        type2 = pokemon.type2;
+      if (pokemon.type2 !== null) type2 = pokemon.type2;
 
       const vectorAux = this.pokemonsRepository.calcWeakness(type1, type2);
-      allWeaknesses = [...vectorAux];
+      allWeaknesses.push(...vectorAux);
     });
 
     return allWeaknesses;
   }
 
   public calcResistence(pokemons: PokemonTeam[]): number[] {
-    let allResistances: number[] = [];
+    const allResistances: number[] = [];
 
     // Para cada pokemon, será calculado sua fraqueza
     pokemons.forEach(pokemon => {
@@ -116,11 +120,10 @@ class TeamsRepository implements ITeamsRepository {
 
       let type2 = 'none';
       // Se o pokemon possuir um segundo tipo, salva
-      if (pokemon.type2 !== undefined && pokemon.type2.length !== 0)
-        type2 = pokemon.type2;
+      if (pokemon.type2 !== null) type2 = pokemon.type2;
 
       const vectorAux = this.pokemonsRepository.calcResistence(type1, type2);
-      allResistances = [...vectorAux];
+      allResistances.push(...vectorAux);
     });
 
     return allResistances;

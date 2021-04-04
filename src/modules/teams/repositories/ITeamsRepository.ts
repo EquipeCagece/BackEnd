@@ -9,7 +9,7 @@ export default interface ITeamsRepository {
   calcWeakness(pokemons: PokemonTeam[]): number[];
   calcResistence(pokemons: PokemonTeam[]): number[];
   createTeam(data: CreateTeamDTO): Promise<Team>;
-  getTeams(id: string): Promise<Team[]>;
+  getTeamsByUserId(id: string): Promise<Team[]>;
   getTeamProfile(id: string): Promise<TeamProfileDTO>;
-  deleteTeam(data: Team): Promise<void>;
+  deleteTeam(id: string): Promise<void>;
 }

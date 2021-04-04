@@ -18,6 +18,9 @@ import PokemonsRepository from '@modules/pokemons/infra/pokemon/implementations/
 import ITeamsRepository from '@modules/teams/repositories/ITeamsRepository';
 import TeamsRepository from '@modules/teams/infra/typeorm/implementations/TeamsRepository';
 
+import IPokemonsTeamsRepository from '@modules/teams/repositories/IPokemonsTeamsRepository';
+import PokemonsTeamsRepository from '@modules/teams/infra/typeorm/implementations/PokemonsTeamsRepository';
+
 container.registerSingleton<IUsersRepository>(
   'UsersRepository',
   UsersRepository,
@@ -41,4 +44,9 @@ container.registerSingleton<IPokemonsRepository>(
 container.registerSingleton<ITeamsRepository>(
   'TeamsRepository',
   TeamsRepository,
+);
+
+container.registerSingleton<IPokemonsTeamsRepository>(
+  'PokemonsTeamsRepository',
+  PokemonsTeamsRepository,
 );

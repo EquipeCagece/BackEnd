@@ -12,7 +12,7 @@ class GetTeamsService {
   ) {}
 
   public async execute(user_id: string): Promise<Team[]> {
-    const teams = await this.teamRepository.getTeams(user_id);
+    const teams = await this.teamRepository.getTeamsByUserId(user_id);
 
     return teams;
   }

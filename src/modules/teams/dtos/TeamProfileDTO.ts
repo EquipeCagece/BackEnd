@@ -3,5 +3,5 @@ import CalculateTypesDTO from './CalculateTypesDTO';
 
 export default interface TeamProfileDTO {
   team: Team;
-  typeWeakResist: CalculateTypesDTO;
+  typeWeakResist?: CalculateTypesDTO;
 }

@@ -15,5 +15,6 @@ teamRouter.use(ensureAuthenticated);
 teamRouter.post('/', upload.single('image'), teamsController.create);
 teamRouter.get('/team', teamsController.show);
 teamRouter.get('/', teamsController.index);
+teamRouter.delete('/', teamsController.delete);
 
 export default teamRouter;

@@ -6,6 +6,7 @@ import profileRouter from '@modules/users/infra/http/routes/profile.routes';
 import evolutionsRouter from '@modules/pokemons/infra/http/routes/pokemons.routes';
 import favoritesRouter from '@modules/users/infra/http/routes/favorites.routes';
 import teamsRouter from '@modules/teams/infra/http/routes/teams.routes';
+import pokemonsTeams from '@modules/teams/infra/http/routes/pokemonsTeams.routes';
 
 const routes = Router();
 
@@ -15,5 +16,6 @@ routes.use('/profile', profileRouter);
 routes.use('/pokemon', evolutionsRouter);
 routes.use('/favorites', favoritesRouter);
 routes.use('/teams', teamsRouter);
+routes.use('/pokemonTeams', pokemonsTeams);
 
 export default routes;
