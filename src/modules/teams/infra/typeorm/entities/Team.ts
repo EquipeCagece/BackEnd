@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -31,6 +32,14 @@ class Team {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Expose({ name: 'team_url' })
+  getAvatarUrl(): string | null {
+    if (!this.image) {
+      return null;
+    }
+    return `${process.env.APP_API_URL}/files/${this.image}`;
+  }
 
   @ManyToOne(() => User, user => user.teams)
   @JoinColumn({ name: 'user_id' })
