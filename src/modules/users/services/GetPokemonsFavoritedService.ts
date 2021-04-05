@@ -19,13 +19,26 @@ class GetPokemonsFavoritedService {
       userId,
     );
 
-    const namesPokemons = favorites.map(favorite => favorite.name);
+    favorites.map(favo => favo.favorite_id);
 
-    const returnFavoritesPokemonsFormatted = namesPokemons.map(async name => {
-      const response = await this.pokeApiRepository.searchPokemonByName(name);
-
-      return response;
+    const namesPokemons = favorites.map(favorite => {
+      return {
+        favorite,
+      };
     });
+
+    const returnFavoritesPokemonsFormatted = namesPokemons.map(
+      async pokemon => {
+        const response = await this.pokeApiRepository.searchPokemonByName(
+          pokemon.favorite.name,
+        );
+
+        return {
+          ...response,
+          ...pokemon.favorite,
+        };
+      },
+    );
 
     return Promise.all(returnFavoritesPokemonsFormatted);
   }

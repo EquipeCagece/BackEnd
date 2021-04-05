@@ -1,8 +1,9 @@
 export default interface ReturnFavoritesPokemons {
-  id: number;
+  pokemon_id: number;
   name: string;
   imageUrl: string;
   types: Array<{
     name: string;
   }>;
+  id: string;
 }
