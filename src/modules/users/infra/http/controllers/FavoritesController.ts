@@ -23,7 +23,7 @@ export default class FavoritesController {
   }
 
   async delete(request: Request, response: Response): Promise<Response> {
-    const { id } = request.body;
+    const { id } = request.params;
 
     const unFavoritePokemon = container.resolve(UnFavoritePokemonService);
 

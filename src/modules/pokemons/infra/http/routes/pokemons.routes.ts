@@ -9,9 +9,9 @@ const evolutionsController = new EvolutionsController();
 const pokemonStatsController = new PokemonStatsController();
 const pokemonsController = new PokemonsController();
 
-profileRouter.get('/evolutions', evolutionsController.index);
-profileRouter.get('/stats', pokemonStatsController.show);
+profileRouter.get('/evolutions/:name', evolutionsController.index);
+profileRouter.get('/stats/:name', pokemonStatsController.show);
 profileRouter.get('/', pokemonsController.index);
-profileRouter.get('/search', pokemonsController.show);
+profileRouter.get('/search/:name', pokemonsController.show);
 
 export default profileRouter;

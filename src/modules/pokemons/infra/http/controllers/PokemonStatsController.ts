@@ -5,7 +5,7 @@ import GetPokemonStatsService from '@modules/pokemons/services/GetPokemonStatsSe
 
 export default class PokemonStatsController {
   public async show(request: Request, response: Response): Promise<Response> {
-    const { name } = request.body;
+    const { name } = request.params;
 
     const getPokemonStatsService = container.resolve(GetPokemonStatsService);
 

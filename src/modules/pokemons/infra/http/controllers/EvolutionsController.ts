@@ -5,11 +5,11 @@ import GetEvolutionsService from '@modules/pokemons/services/GetEvolutionsServic
 
 export default class EvolutionsController {
   public async index(request: Request, response: Response): Promise<Response> {
-    const { id } = request.body;
+    const { name } = request.params;
 
     const getEvolutionsService = container.resolve(GetEvolutionsService);
 
-    const evolution = await getEvolutionsService.execute(id);
+    const evolution = await getEvolutionsService.execute(name);
 
     return response.json(evolution);
   }

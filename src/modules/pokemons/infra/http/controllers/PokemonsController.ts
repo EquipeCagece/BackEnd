@@ -19,7 +19,7 @@ export default class PokemonsController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { name } = request.body;
+    const { name } = request.params;
 
     const searchPokemonByName = container.resolve(SearchPokemonByName);
 

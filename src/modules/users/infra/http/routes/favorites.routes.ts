@@ -12,6 +12,6 @@ favoritesRouter.get('/', favoritesController.index);
 
 favoritesRouter.post('/create', favoritesController.create);
 
-favoritesRouter.delete('/delete', favoritesController.delete);
+favoritesRouter.delete('/delete/:id', favoritesController.delete);
 
 export default favoritesRouter;
