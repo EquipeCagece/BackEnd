@@ -37,7 +37,7 @@ export default class TeamsController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const { id } = request.body;
+    const { id } = request.params;
 
     const showTeamService = container.resolve(ShowTeamService);
 

@@ -3,6 +3,7 @@ import IFavoritesRepository from '../repositories/IFavoritesRepository';
 import Favorite from '../infra/typeorm/entities/Favorite';
 
 interface Request {
+  name: string;
   favorite_id: string;
   pokemon_id: number;
 }
@@ -17,10 +18,12 @@ class FavoritePokemonService {
   public async execute({
     favorite_id,
     pokemon_id,
+    name,
   }: Request): Promise<Favorite> {
     const data = {
       pokemon_id,
       favorite_id,
+      name,
     };
 
     const favorite = await this.favoritesRepository.favoritePokemon(data);

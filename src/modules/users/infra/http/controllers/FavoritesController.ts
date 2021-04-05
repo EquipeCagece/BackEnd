@@ -8,11 +8,12 @@ import GetPokemonsFavoritedService from '@modules/users/services/GetPokemonsFavo
 export default class FavoritesController {
   public async create(request: Request, response: Response): Promise<Response> {
     const user_id = request.user.id;
-    const { pokemon_id } = request.body;
+    const { pokemon_id, name } = request.body;
 
     const data = {
       favorite_id: user_id,
       pokemon_id,
+      name,
     };
 
     const favoritePokemon = container.resolve(FavoritePokemonService);

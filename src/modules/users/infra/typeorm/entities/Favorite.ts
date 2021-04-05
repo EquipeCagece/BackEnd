@@ -14,6 +14,9 @@ class Favorite {
   id: string;
 
   @Column()
+  name: string;
+
+  @Column()
   pokemon_id: number;
 
   @Column()

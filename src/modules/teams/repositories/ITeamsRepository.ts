@@ -11,7 +11,7 @@ export default interface ITeamsRepository {
   createTeam(data: CreateTeamDTO): Promise<Team>;
   getTeamsByUserId(id: string): Promise<Team[]>;
   getTeamProfile(id: string): Promise<TeamProfileDTO>;
-  getTeamById(id : string) : Promise<Team>;
+  getTeamById(id: string): Promise<Team>;
   deleteTeam(id: string): Promise<void>;
-  save(team : Team): Promise<Team>
+  save(team: Team): Promise<Team>;
 }

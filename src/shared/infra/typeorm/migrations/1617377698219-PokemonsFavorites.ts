@@ -16,6 +16,10 @@ export default class PokemonsFavorites1617377698219
             generationStrategy: 'uuid',
           },
           {
+            name: 'name',
+            type: 'varchar',
+          },
+          {
             name: 'pokemon_id',
             type: 'integer',
           },
