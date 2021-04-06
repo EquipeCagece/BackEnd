@@ -1,4 +1,4 @@
-export default interface PokemonsDTO {
+export default interface SearchPokemonDTO {
   id: number;
   name: string;
   imageUrl: string;

@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 
-import IPokeApiRepository from '@modules/pokemons/repositories/IPokeApiRepository';
+import IPokemonsProvider from '@shared/container/providers/PokemonsProvider/models/IPokemonsProvider';
 import IFavoritesRepository from '../repositories/IFavoritesRepository';
 import ReturnFavoritesPokemons from '../dtos/ReturnFavoritesPokemons';
 
@@ -10,8 +10,8 @@ class GetPokemonsFavoritedService {
     @inject('FavoritesRepository')
     private favoritesRepository: IFavoritesRepository,
 
-    @inject('PokeApiRepository')
-    private pokeApiRepository: IPokeApiRepository,
+    @inject('PokemonsProvider')
+    private pokemonsProvider: IPokemonsProvider,
   ) {}
 
   public async execute(userId: string): Promise<ReturnFavoritesPokemons[]> {
@@ -29,7 +29,7 @@ class GetPokemonsFavoritedService {
 
     const returnFavoritesPokemonsFormatted = namesPokemons.map(
       async pokemon => {
-        const response = await this.pokeApiRepository.searchPokemonByName(
+        const response = await this.pokemonsProvider.searchPokemonByName(
           pokemon.favorite.name,
         );
 

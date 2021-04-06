@@ -6,10 +6,10 @@ import CreateTeamDTO from '@modules/teams/dtos/CreateTeamDTO';
 import CalculateTypesDTO from '@modules/teams/dtos/CalculateTypesDTO';
 import TeamProfileDTO from '@modules/teams/dtos/TeamProfileDTO';
 
-import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
-import PokemonsRepository from '@modules/pokemons/infra/pokemon/implementations/PokemonsRepository';
+import IPokemonProvider from '@shared/container/providers/PokemonProvider/models/IPokemonProvider';
+import PokemonProvider from '@shared/container/providers/PokemonProvider/implementations/PokemonProvider';
 
-import { typeNames } from '@modules/pokemons/infra/pokemon/utils/boardTypes';
+import { typeNames } from '@shared/container/providers/PokemonProvider/utils/boardTypes';
 
 import Team from '../entities/Team';
 import PokemonTeam from '../entities/PokemonTeam';
@@ -17,11 +17,11 @@ import PokemonTeam from '../entities/PokemonTeam';
 class TeamsRepository implements ITeamsRepository {
   private ormRepository: Repository<Team>;
 
-  private pokemonsRepository: IPokemonsRepository;
+  private pokemonsRepository: IPokemonProvider;
 
   constructor() {
     this.ormRepository = getRepository(Team);
-    this.pokemonsRepository = new PokemonsRepository();
+    this.pokemonsRepository = new PokemonProvider();
   }
 
   public async getTeamsByUserId(user_id: string): Promise<Team[]> {

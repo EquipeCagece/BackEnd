@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 
-import IPokeApiRepository from '@modules/pokemons/repositories/IPokeApiRepository';
+import IPokemonsProvider from '@shared/container/providers/PokemonsProvider/models/IPokemonsProvider';
 import AppError from '@shared/errors/AppError';
 import IPokemonsTeamsRepository from '../repositories/IPokemonsTeamsRepository';
 
@@ -17,19 +17,19 @@ class AddPokemonToTeamService {
     @inject('PokemonsTeamsRepository')
     private pokemonsTeamsRepository: IPokemonsTeamsRepository,
 
-    @inject('PokeApiRepository')
-    private pokeApiRepository: IPokeApiRepository,
+    @inject('PokemonsProvider')
+    private pokemonsProvider: IPokemonsProvider,
   ) {}
 
   public async execute({ pokemon_id, team_id }: Request): Promise<PokemonTeam> {
-    const pokemon = await this.pokeApiRepository.getPokemonData(
+    const pokemon = await this.pokemonsProvider.getPokemonData(
       String(pokemon_id),
     );
 
     const pokemonsInTeam = await this.pokemonsTeamsRepository.getPokemonsByTeamId(
       team_id,
     );
-    console.log(pokemonsInTeam);
+
     const pokemonAlreadyInTeam = pokemonsInTeam.filter(
       poke => poke.name === pokemon.name,
     );
@@ -43,7 +43,7 @@ class AddPokemonToTeamService {
     }
 
     const pokemonFormatted = {
-      name: pokemon.name,
+      name: this.pokemonsProvider.capitalizeFirstLetter(pokemon.name),
       type1: pokemon.types[0].type.name,
       type2: pokemon.types[1]?.type.name,
       team_id,

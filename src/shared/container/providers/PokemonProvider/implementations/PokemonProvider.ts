@@ -1,8 +1,8 @@
-import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
+import IPokemonProvider from '../models/IPokemonProvider';
 
 import { BOARD, typesToInt } from '../utils/boardTypes';
 
-class PokemonsRepository implements IPokemonsRepository {
+class PokemonProvider implements IPokemonProvider {
   public calcWeakness(strType1: string, strType2: string): number[] {
     const result: number[] = [];
 
@@ -47,4 +47,4 @@ class PokemonsRepository implements IPokemonsRepository {
   }
 }
 
-export default PokemonsRepository;
+export default PokemonProvider;

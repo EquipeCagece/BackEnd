@@ -4,17 +4,17 @@ import IPokemonsProvider from '@shared/container/providers/PokemonsProvider/mode
 import PokemonsDTO from '@shared/container/providers/PokemonsProvider/dtos/PokemonsDTO';
 
 @injectable()
-class GetPokemonsService {
+class GetPokemonsByUrlService {
   constructor(
     @inject('PokemonsProvider')
     private pokemonsProvider: IPokemonsProvider,
   ) {}
 
-  public async execute(offset: number, limit: number): Promise<PokemonsDTO[]> {
-    const pokemons = this.pokemonsProvider.getPokemons(offset, limit);
+  public async execute(url: string): Promise<PokemonsDTO[]> {
+    const pokemons = this.pokemonsProvider.getPokemonsByUrl(url);
 
     return pokemons;
   }
 }
 
-export default GetPokemonsService;
+export default GetPokemonsByUrlService;

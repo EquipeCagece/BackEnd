@@ -1,19 +1,22 @@
-import IPokeApiRepository from '@modules/pokemons/repositories/IPokeApiRepository';
+import PokeApiDTO, { Type } from '../dtos/PokeApiDTO';
+import PokeApiSpecieDTO from '../dtos/PokeApiSpecieDTO';
+import PokeApiEvolutionDTO from '../dtos/PokeApiEvolutionDTO';
+import PokeApiResultDTO from '../dtos/PokeApiResultDTO';
 
-import PokeApiDTO, { Type } from '@modules/pokemons/dtos/PokeApiDTO';
-import PokeApiSpecieDTO from '@modules/pokemons/dtos/PokeApiSpecieDTO';
-import PokeApiEvolutionDTO from '@modules/pokemons/dtos/PokeApiEvolutionDTO';
-import PokeApiResultDTO from '@modules/pokemons/dtos/PokeApiResultDTO';
+import PokemonDTO, { TypePokemonFormatted } from '../dtos/PokemonDTO';
+import PokemonsDTO from '../dtos/PokemonsDTO';
+import SearchPokemonDTO from '../dtos/SearchPokemonDTO';
+import EvolutionDTO from '../dtos/EvolutionDTO';
 
-import PokemonDTO, {
-  TypePokemonFormatted,
-} from '@modules/pokemons/dtos/PokemonDTO';
-import PokemonsDTO from '@modules/pokemons/dtos/PokemonsDTO';
-import EvolutionDTO from '@modules/pokemons/dtos/EvolutionDTO';
+import IPokemonsProvider from '../models/IPokemonsProvider';
 
 import pokeApi from '../utils/pokeApi';
 
-class PokeApiRepository implements IPokeApiRepository {
+class PokeApiProvider implements IPokemonsProvider {
+  public capitalizeFirstLetter(name: string): string {
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
   public async getPokemonStatsByName(name: string): Promise<PokemonDTO> {
     const pokemon = await this.getPokemonData(name);
 
@@ -165,18 +168,10 @@ class PokeApiRepository implements IPokeApiRepository {
     return pokemonsEvolutions;
   }
 
-  public async getPokemons(
-    offset: number,
-    limit: number,
-  ): Promise<PokemonsDTO[]> {
-    const response = await pokeApi.get<PokeApiResultDTO>('/pokemon', {
-      params: {
-        offset: offset || 0,
-        limit: limit || 10,
-      },
-    });
+  public async getPokemonsByUrl(url: string): Promise<PokemonsDTO> {
+    const response = await pokeApi.get<PokeApiResultDTO>(url);
 
-    const { results } = response.data;
+    const { results, next, previous } = response.data;
 
     const pokemons = results.map(async pokemon => {
       const pokemonId = this.getPokemonIdByUrl(pokemon.url);
@@ -197,10 +192,53 @@ class PokeApiRepository implements IPokeApiRepository {
       };
     });
 
-    return Promise.all(pokemons);
+    return {
+      pokemons: await Promise.all(pokemons),
+      nextPage: next,
+      previousPage: previous,
+    };
   }
 
-  public async searchPokemonByName(name: string): Promise<PokemonsDTO> {
+  public async getPokemons(
+    offset: number,
+    limit: number,
+  ): Promise<PokemonsDTO> {
+    const response = await pokeApi.get<PokeApiResultDTO>('/pokemon', {
+      params: {
+        offset: offset || 0,
+        limit: limit || 10,
+      },
+    });
+
+    const { results, next, previous } = response.data;
+
+    const pokemons = results.map(async pokemon => {
+      const pokemonId = this.getPokemonIdByUrl(pokemon.url);
+
+      const pokemonData = await this.getPokemonData(pokemonId);
+
+      const types = pokemonData.types.map(({ type }) => {
+        return {
+          name: type.name,
+        };
+      });
+
+      return {
+        id: pokemonData.id,
+        name: pokemonData.name,
+        imageUrl: this.getPokemonImage(pokemonId),
+        types,
+      };
+    });
+
+    return {
+      pokemons: await Promise.all(pokemons),
+      nextPage: next,
+      previousPage: previous,
+    };
+  }
+
+  public async searchPokemonByName(name: string): Promise<SearchPokemonDTO> {
     const pokemonData = await this.getPokemonData(name);
 
     return {
@@ -234,4 +272,4 @@ class PokeApiRepository implements IPokeApiRepository {
   }
 }
 
-export default PokeApiRepository;
+export default PokeApiProvider;

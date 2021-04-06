@@ -9,12 +9,6 @@ import UsersRepository from '@modules/users/infra/typeorm/implementations/UsersR
 import IFavoritesRepository from '@modules/users/repositories/IFavoritesRepository';
 import FavoritesRepository from '@modules/users/infra/typeorm/implementations/FavoritesRepository';
 
-import IPokeApiRepository from '@modules/pokemons/repositories/IPokeApiRepository';
-import PokeApiRepository from '@modules/pokemons/infra/pokeapi/implementations/PokeApiRepository';
-
-import IPokemonsRepository from '@modules/pokemons/repositories/IPokemonsRepository';
-import PokemonsRepository from '@modules/pokemons/infra/pokemon/implementations/PokemonsRepository';
-
 import ITeamsRepository from '@modules/teams/repositories/ITeamsRepository';
 import TeamsRepository from '@modules/teams/infra/typeorm/implementations/TeamsRepository';
 
@@ -29,16 +23,6 @@ container.registerSingleton<IUsersRepository>(
 container.registerSingleton<IFavoritesRepository>(
   'FavoritesRepository',
   FavoritesRepository,
-);
-
-container.registerSingleton<IPokeApiRepository>(
-  'PokeApiRepository',
-  PokeApiRepository,
-);
-
-container.registerSingleton<IPokemonsRepository>(
-  'PokemonsRepository',
-  PokemonsRepository,
 );
 
 container.registerSingleton<ITeamsRepository>(
